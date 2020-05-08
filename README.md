@@ -7,7 +7,7 @@ python个人练手OA后端服务
 
 将OA整个项目放在服务器的/opt目录下
 
-执行部署命令：
+执行部署命令（全部粘贴复制执行即可）：
 ```
 tee ./deploy.sh <<-'EOF'
 #!/bin/bash
