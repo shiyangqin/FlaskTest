@@ -19,9 +19,9 @@ RUN yum install -y gcc openssl-devel bzip2-devel expat-devel gdbm-devel readline
     && yum install -y epel-release \
     && yum install -y supervisor \
     && yum install -y nginx \
-    && mv /opt/OA/doc/deploy/start.sh /start.sh \
+    && mv /opt/OA/doc/deploy/oa.start.sh /oa.start.sh \
     && mv /opt/OA/doc/deploy/nginx.conf /etc/nginx/nginx.conf \
     && mv /opt/OA/doc/deploy/supervisor.ini /etc/supervisord.d/supervisor.ini \
-    && chmod 777 /start.sh
+    && chmod 777 /oa.start.sh
 
 EXPOSE 80
