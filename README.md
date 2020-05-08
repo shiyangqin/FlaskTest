@@ -34,8 +34,10 @@ docker run -itd --network=oa-net --network-alias pg_server -p 5432:5432 -v pg_da
 
 初始化pg数据库：
 ```
-docker exec -it pg /pg.start.sh
+docker exec -it pg sh /pg.start.sh
 ```
+
+这里先启动容器再初始化pg数据库是因为使用dockerfile构建容器时，使用psql命令失败，使用启动容器时初始化会覆盖原有的启动服务命令，我个人尝试失败了，所以做了妥协，理想状态应该是使用dockerfile构建镜像，启动后自动初始化
 
 启动oa容器：
 ```
