@@ -18,11 +18,11 @@ docker run -itd --network=oa_net --network-alias pg_server -p 5432:5432 -v pg_da
 sleep 3
 docker exec -it pg sh /pg.start.sh
 docker build -f /opt/OA/doc/deploy/oa.Dockerfile -t oa:test /opt
-docker run -itd --network=oa_net --network-alias oa_server -p 80:80 --name oa oa:test /bin/bash
-docker exec -it oa supervisord -c /etc/supervisord.conf
+docker run -itd --network=oa_net --network-alias oa_server -p 80:80 --name oa oa:test 
 /bin/bash
 EOF
 sh ./deploy.sh
+
 ```
 
 验证：打开浏览器输入服务器ip/test(例：10.255.175.224/test)，返回this is test则表示成功

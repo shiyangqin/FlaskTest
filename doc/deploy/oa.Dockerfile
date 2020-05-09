@@ -20,6 +20,8 @@ RUN yum install -y gcc openssl-devel bzip2-devel expat-devel gdbm-devel readline
     && yum install -y supervisor \
     && yum install -y nginx \
     && mv /opt/OA/doc/deploy/nginx.conf /etc/nginx/nginx.conf \
-    && mv /opt/OA/doc/deploy/supervisor.ini /etc/supervisord.d/supervisor.ini \
+    && mv /opt/OA/doc/deploy/supervisor.ini /etc/supervisord.d/supervisor.ini
+
+CMD ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
 
 EXPOSE 80
