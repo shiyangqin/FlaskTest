@@ -132,7 +132,7 @@ INSERT INTO "public"."sys_role_function" VALUES (3, 1);
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."sys_login_id_seq"', 1, true);
+SELECT setval('"public"."sys_login_id_seq"', 1, false);
 
 -- ----------------------------
 -- Primary Key structure for table sys_function
