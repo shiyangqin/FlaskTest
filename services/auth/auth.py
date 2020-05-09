@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from flask import session
 from . import AuthProducer
 
 
@@ -26,10 +27,19 @@ class AuthRegister(AuthProducer):
                 %(user_password)s,
                 0,
                 '1'
-            )
+            ) returning login_id
         """
-        self.get_pg().execute(sql, param)
+        login_id = self.get_pg().execute(sql, param)[0]['login_id']
+        sql = "insert into sys_login_role(login_id, role_id) values(%(login_id)s, '3')"
+        self.get_pg().execute(sql, {"login_id": login_id})
+
         return {
             "flag": True,
             "msg": "注册成功"
         }
+
+
+class AuthLogin(AuthProducer):
+    def process(self, **kwargs):
+        param = kwargs['request'].get_json()
+        token = session.sid

@@ -10,3 +10,9 @@ auth_app = Blueprint('auth', __name__, url_prefix='/auth')
 def auth_register():
     """注册账号"""
     return AuthRegister().do()
+
+
+@auth_app.route('/login', methods=['POST'])
+def auth_login():
+    """账号登陆"""
+    return AuthLogin().do()
