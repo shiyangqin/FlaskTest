@@ -4,7 +4,7 @@
 -- Project :      Model.DM1
 -- Author :       Qinsy
 --
--- Date Created : Saturday, May 09, 2020 12:29:38
+-- Date Created : Saturday, May 09, 2020 15:25:42
 -- Target DBMS : PostgreSQL 8.0
 --
 
@@ -29,12 +29,13 @@ CREATE TABLE sys_function(
 --
 
 CREATE TABLE sys_login(
-    user_name        varchar(64)    NOT NULL,
+    login_id         integer        NOT NULL,
+    user_name        varchar(32),
     user_password    varchar(64),
     login_time       timestamp      DEFAULT now() NOT NULL,
     repeat           int4           DEFAULT 0 NOT NULL,
     state            char(1)        DEFAULT '1' NOT NULL,
-    CONSTRAINT "PK2_1" PRIMARY KEY (user_name)
+    CONSTRAINT "PK2_1" PRIMARY KEY (login_id)
 )
 ;
 
@@ -45,9 +46,9 @@ CREATE TABLE sys_login(
 --
 
 CREATE TABLE sys_login_role(
-    role_id      int4           NOT NULL,
-    user_name    varchar(64)    NOT NULL,
-    CONSTRAINT "PK12" PRIMARY KEY (role_id, user_name)
+    login_id    int4    NOT NULL,
+    role_id     int4    NOT NULL,
+    CONSTRAINT "PK12" PRIMARY KEY (login_id, role_id)
 )
 ;
 
@@ -59,7 +60,7 @@ CREATE TABLE sys_login_role(
 
 CREATE TABLE sys_person(
     person_id        integer         NOT NULL,
-    user_name        varchar(64)     NOT NULL,
+    login_id         int4            NOT NULL,
     person_name      varchar(32),
     sex              char(1),
     birthday         timestamp,
@@ -110,8 +111,8 @@ CREATE TABLE sys_role_function(
 --
 
 ALTER TABLE sys_login_role ADD CONSTRAINT "Refsys_login7" 
-    FOREIGN KEY (user_name)
-    REFERENCES sys_login(user_name)
+    FOREIGN KEY (login_id)
+    REFERENCES sys_login(login_id)
 ;
 
 ALTER TABLE sys_login_role ADD CONSTRAINT "Refsys_role8" 
@@ -125,8 +126,8 @@ ALTER TABLE sys_login_role ADD CONSTRAINT "Refsys_role8"
 --
 
 ALTER TABLE sys_person ADD CONSTRAINT "Refsys_login6" 
-    FOREIGN KEY (user_name)
-    REFERENCES sys_login(user_name)
+    FOREIGN KEY (login_id)
+    REFERENCES sys_login(login_id)
 ;
 
 
