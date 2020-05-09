@@ -4,8 +4,10 @@ import logging
 from datetime import date
 from datetime import datetime
 
+import redis
 from flask import current_app, request
 
+from config import REDIS
 from utils.pg import PostgreSQL
 
 logger = logging.getLogger(__name__)
@@ -22,7 +24,7 @@ class DateEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, obj)
 
 
-class HasPostgreSQL(object):
+class PGBase(object):
     """PG数据库业务基类"""
     def __init__(self):
         self._pg = None
@@ -34,7 +36,18 @@ class HasPostgreSQL(object):
         return self._pg
 
 
-class Producer(HasPostgreSQL):
+class RedisBase(object):
+    """redis业务基类"""
+    def __init__(self):
+        self._redis = dict()
+
+    def get_redis(self, db):
+        if db not in self._redis:
+            self._redis[db] = redis.Redis(host=REDIS.host, port=REDIS.port, password=REDIS.pwd, db=db)
+        return self._redis[db]
+
+
+class Producer(PGBase, RedisBase):
     """
     逻辑处理基类：
         do：统一进行异常处理和数据库的连接、提交、异常回滚、关闭等操作，调用process逻辑处理函数
@@ -45,7 +58,8 @@ class Producer(HasPostgreSQL):
     """
 
     def __init__(self):
-        HasPostgreSQL.__init__(self)
+        PGBase.__init__(self)
+        RedisBase.__init__(self)
         self._process_type = 0
 
     def set_process_type(self, process_type=1):
@@ -84,7 +98,28 @@ class Producer(HasPostgreSQL):
             if self._pg:
                 del self._pg
                 self._pg = None
+            for r in self._redis.values():
+                r.close()
+                del r
 
     def process(self, **kwargs):
         """业务代码逻辑部分,在子类中重写process来处理业务"""
-        pass
+        res = {
+            "测试pg数据库": False,
+            "测试redis数据库": False
+        }
+        try:
+            self.get_pg().execute("select * from sys_login")
+            res['测试pg数据库'] = True
+        except Exception as e:
+            raise Exception('数据库连接失败')
+
+        try:
+            redis_coon = self.get_redis(0)
+            redis_coon.append('test', '0')
+            redis_coon.delete('test')
+            res['测试redis数据库'] = True
+        except Exception as e:
+            pass
+
+        return res

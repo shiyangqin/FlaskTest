@@ -16,5 +16,5 @@ app.app_context().push()
 current_app.pool = pg_pool.get_pool()
 
 
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=9000, debug=True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=9000, debug=True)

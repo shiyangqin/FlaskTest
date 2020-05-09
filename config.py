@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import platform
 import configparser
 import os
 
@@ -10,6 +11,8 @@ def load_config(path):
     @return: dict, 详细配置
     """
     cf = configparser.ConfigParser()
+    # if "Linux" == platform.system(): # 这里可以指定从linux下的指定文件读取配置，可以实现配置文件与项目分离
+    #     path = 'opt/sap.ini'
     cf.read(path)
     sets = cf.sections()
     config = {}
@@ -25,16 +28,24 @@ filepath = os.path.join(os.path.dirname(__file__), 'sap.ini')
 conf = load_config(filepath)
 
 
-# 日志配置
 class LOG(object):
+    """日志配置"""
     file_name = conf.get('LOG').get('file_name')
     level = conf.get('LOG').get('level')
 
 
-# PG数据库配置
 class PG(object):
+    """PG数据库配置"""
     host = conf.get('PG').get('host')
     port = conf.get('PG').get('port')
     user = conf.get('PG').get('user')
     pwd = conf.get('PG').get('pwd')
     name = conf.get('PG').get('name')
+
+
+class REDIS(object):
+    """REDIS配置"""
+    host = conf.get('REDIS').get('host')
+    port = conf.get('REDIS').get('port')
+    pwd = conf.get('REDIS').get('pwd')
+    session = 0  # 存session
