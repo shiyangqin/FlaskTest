@@ -2,7 +2,7 @@
 from flask import Blueprint
 from services import Producer
 
-main_app = Blueprint(__name__ + "_app", __name__)
+main_app = Blueprint('main', __name__)
 
 
 @main_app.route('/test', methods=['GET'])
