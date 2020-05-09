@@ -26,13 +26,3 @@ sh ./deploy.sh
 ```
 
 验证：打开浏览器输入服务器ip/test(例：10.255.175.224/test)，返回this is test则表示成功
-
-docker清除数据：
-```
-docker rm -f pg
-docker rm -f oa
-docker rmi pg:test
-docker rmi oa:test
-docker volume prune -f
-docker network prune -f
-```
