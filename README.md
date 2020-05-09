@@ -24,7 +24,6 @@ docker run -itd --network=oa_net --network-alias oa_server -p 80:80 --name oa oa
 /bin/bash
 EOF
 sh ./deploy.sh
-
 ```
 
 验证：打开浏览器输入服务器ip/test(例：10.255.175.224/test)，返回"{"status": "ok", "data": {"pg": true, "redis": true}}"则表示成功
