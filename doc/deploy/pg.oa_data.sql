@@ -4,7 +4,7 @@
 -- Project :      Model.DM1
 -- Author :       Qinsy
 --
--- Date Created : Friday, May 08, 2020 11:59:05
+-- Date Created : Saturday, May 09, 2020 12:29:38
 -- Target DBMS : PostgreSQL 8.0
 --
 
@@ -29,13 +29,12 @@ CREATE TABLE sys_function(
 --
 
 CREATE TABLE sys_login(
-    login_id         integer        NOT NULL,
-    user_name        varchar(32),
+    user_name        varchar(64)    NOT NULL,
     user_password    varchar(64),
     login_time       timestamp      DEFAULT now() NOT NULL,
     repeat           int4           DEFAULT 0 NOT NULL,
     state            char(1)        DEFAULT '1' NOT NULL,
-    CONSTRAINT "PK2_1" PRIMARY KEY (login_id)
+    CONSTRAINT "PK2_1" PRIMARY KEY (user_name)
 )
 ;
 
@@ -46,9 +45,9 @@ CREATE TABLE sys_login(
 --
 
 CREATE TABLE sys_login_role(
-    login_id    int4    NOT NULL,
-    role_id     int4    NOT NULL,
-    CONSTRAINT "PK12" PRIMARY KEY (login_id, role_id)
+    role_id      int4           NOT NULL,
+    user_name    varchar(64)    NOT NULL,
+    CONSTRAINT "PK12" PRIMARY KEY (role_id, user_name)
 )
 ;
 
@@ -60,7 +59,7 @@ CREATE TABLE sys_login_role(
 
 CREATE TABLE sys_person(
     person_id        integer         NOT NULL,
-    login_id         int4            NOT NULL,
+    user_name        varchar(64)     NOT NULL,
     person_name      varchar(32),
     sex              char(1),
     birthday         timestamp,
@@ -107,28 +106,12 @@ CREATE TABLE sys_role_function(
 
 
 -- 
--- TABLE: sys_session 
---
-
-CREATE TABLE sys_session(
-    token        text           NOT NULL,
-    user_info    text,
-    user_name    varchar(20),
-    ip           varchar(32),
-    r_time       timestamp      DEFAULT now(),
-    CONSTRAINT "PK1" PRIMARY KEY (token)
-)
-;
-
-
-
--- 
 -- TABLE: sys_login_role 
 --
 
 ALTER TABLE sys_login_role ADD CONSTRAINT "Refsys_login7" 
-    FOREIGN KEY (login_id)
-    REFERENCES sys_login(login_id)
+    FOREIGN KEY (user_name)
+    REFERENCES sys_login(user_name)
 ;
 
 ALTER TABLE sys_login_role ADD CONSTRAINT "Refsys_role8" 
@@ -142,8 +125,8 @@ ALTER TABLE sys_login_role ADD CONSTRAINT "Refsys_role8"
 --
 
 ALTER TABLE sys_person ADD CONSTRAINT "Refsys_login6" 
-    FOREIGN KEY (login_id)
-    REFERENCES sys_login(login_id)
+    FOREIGN KEY (user_name)
+    REFERENCES sys_login(user_name)
 ;
 
 
