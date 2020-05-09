@@ -105,20 +105,20 @@ class Producer(PGBase, RedisBase):
     def process(self, **kwargs):
         """业务代码逻辑部分,在子类中重写process来处理业务"""
         res = {
-            "测试pg数据库": False,
-            "测试redis数据库": False
+            "pg": False,
+            "redis": False
         }
         try:
             self.get_pg().execute("select * from sys_login")
-            res['测试pg数据库'] = True
+            res['pg'] = True
         except Exception as e:
-            raise Exception('数据库连接失败')
+            pass
 
         try:
             redis_coon = self.get_redis(0)
             redis_coon.append('test', '0')
             redis_coon.delete('test')
-            res['测试redis数据库'] = True
+            res['redis'] = True
         except Exception as e:
             pass
 
