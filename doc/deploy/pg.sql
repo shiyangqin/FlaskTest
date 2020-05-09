@@ -12,20 +12,9 @@
  Target Server Version : 120002
  File Encoding         : 65001
 
- Date: 09/05/2020 16:41:02
+ Date: 09/05/2020 17:11:52
 */
 
-
--- ----------------------------
--- Sequence structure for sys_function_id_seq
--- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."sys_function_id_seq";
-CREATE SEQUENCE "public"."sys_function_id_seq" 
-INCREMENT 1
-MINVALUE  1
-MAXVALUE 9223372036854775807
-START 1
-CACHE 1;
 
 -- ----------------------------
 -- Sequence structure for sys_login_id_seq
@@ -39,23 +28,12 @@ START 1
 CACHE 1;
 
 -- ----------------------------
--- Sequence structure for sys_role_id_seq
--- ----------------------------
-DROP SEQUENCE IF EXISTS "public"."sys_role_id_seq";
-CREATE SEQUENCE "public"."sys_role_id_seq" 
-INCREMENT 1
-MINVALUE  1
-MAXVALUE 9223372036854775807
-START 1
-CACHE 1;
-
--- ----------------------------
 -- Table structure for sys_function
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_function";
 CREATE TABLE "public"."sys_function" (
-  "function_id" int4 NOT NULL DEFAULT nextval('sys_function_id_seq'::regclass),
-  "function_name" varchar(32) COLLATE "pg_catalog"."default",
+  "function_id" int4 NOT NULL,
+  "function_name" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
   "remark" varchar(64) COLLATE "pg_catalog"."default"
 )
 ;
@@ -71,12 +49,12 @@ INSERT INTO "public"."sys_function" VALUES (1, 'auth', '账户权限');
 DROP TABLE IF EXISTS "public"."sys_login";
 CREATE TABLE "public"."sys_login" (
   "login_id" int4 NOT NULL DEFAULT nextval('sys_login_id_seq'::regclass),
-  "user_name" varchar(32) COLLATE "pg_catalog"."default",
-  "user_password" varchar(64) COLLATE "pg_catalog"."default",
+  "user_name" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
+  "user_password" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
   "login_time" timestamp(6) NOT NULL DEFAULT now(),
   "repeat" int4 NOT NULL DEFAULT 0,
   "state" char(1) COLLATE "pg_catalog"."default" NOT NULL DEFAULT '1'::bpchar,
-  "register_time" timestamp(6)
+  "register_time" timestamp(6) NOT NULL DEFAULT now()
 )
 ;
 
@@ -122,8 +100,8 @@ CREATE TABLE "public"."sys_person" (
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."sys_role";
 CREATE TABLE "public"."sys_role" (
-  "role_id" int4 NOT NULL DEFAULT nextval('sys_role_id_seq'::regclass),
-  "role_name" varchar(64) COLLATE "pg_catalog"."default"
+  "role_id" int4 NOT NULL,
+  "role_name" varchar(64) COLLATE "pg_catalog"."default" NOT NULL
 )
 ;
 
@@ -154,17 +132,7 @@ INSERT INTO "public"."sys_role_function" VALUES (3, 1);
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."sys_function_id_seq"', 2, false);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-SELECT setval('"public"."sys_login_id_seq"', 2, false);
-
--- ----------------------------
--- Alter sequences owned by
--- ----------------------------
-SELECT setval('"public"."sys_role_id_seq"', 2, false);
+SELECT setval('"public"."sys_login_id_seq"', 1, true);
 
 -- ----------------------------
 -- Primary Key structure for table sys_function
