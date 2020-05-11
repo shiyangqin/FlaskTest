@@ -8,7 +8,7 @@ import redis
 from flask import current_app, request
 
 from config import REDIS
-from utils.pg import PostgreSQL
+from utils.pg_util import PostgreSQL
 
 logger = logging.getLogger(__name__)
 
@@ -24,30 +24,43 @@ class DateEncoder(json.JSONEncoder):
             return json.JSONEncoder.default(self, obj)
 
 
-class PGBase(object):
+class PGProducer(object):
     """PG数据库业务基类"""
     def __init__(self):
         self._pg = None
 
-    def get_pg(self, dict_cursor=True):
+    def get_pg(self, dict_cursor=True) -> PostgreSQL:
         """获取pg数据库对象"""
         if not self._pg:
             self._pg = PostgreSQL(conn=current_app.pool.connection(), dict_cursor=dict_cursor)
         return self._pg
 
+    def __del__(self):
+        if self._pg:
+            del self._pg
+            self._pg = None
 
-class RedisBase(object):
+
+class RedisProducer(object):
     """redis业务基类"""
     def __init__(self):
         self._redis = dict()
 
-    def get_redis(self, db):
+    def get_redis(self, db) -> redis.Redis:
         if db not in self._redis:
+            logger.debug(">>>>>>Redis get conn>>>>>>:" + "db=" + str(db))
             self._redis[db] = redis.Redis(host=REDIS.host, port=REDIS.port, password=REDIS.pwd, db=db)
         return self._redis[db]
 
+    def __del__(self):
+        if self._redis.values():
+            logger.debug(">>>>>>Redis close>>>>>>")
+            for r in self._redis.values():
+                r.close()
+                del r
 
-class Producer(PGBase, RedisBase):
+
+class BaseProducer(PGProducer, RedisProducer):
     """
     逻辑处理基类：
         do：统一进行异常处理和数据库的连接、提交、异常回滚、关闭等操作，调用process逻辑处理函数
@@ -58,8 +71,8 @@ class Producer(PGBase, RedisBase):
     """
 
     def __init__(self):
-        PGBase.__init__(self)
-        RedisBase.__init__(self)
+        PGProducer.__init__(self)
+        RedisProducer.__init__(self)
         self._process_type = 0
 
     def set_process_type(self, process_type=1):
@@ -93,14 +106,10 @@ class Producer(PGBase, RedisBase):
             result_msg['status'] = "数据异常！"
             result_msg['error'] = str(e)
             return json.dumps(result_msg)
-        finally:
-            # 释放资源
-            if self._pg:
-                del self._pg
-                self._pg = None
-            for r in self._redis.values():
-                r.close()
-                del r
+
+    def __del__(self):
+        PGProducer.__del__(self)
+        RedisProducer.__del__(self)
 
     def process(self, **kwargs):
         """业务代码逻辑部分,在子类中重写process来处理业务"""

@@ -5,14 +5,18 @@ import functools
 class Permission(object):
     """类函数权限验证装饰器"""
 
-    def __init__(self, function, fail_msg='{"message": "not allow"}'):
+    def __init__(self, function, fail_msg='{"message": "not allow"}', invalid_msg='{"message": "time out"}'):
         self.function = function
         self.failMsg = fail_msg
+        self.invalid_msg = invalid_msg
 
     def __call__(self, func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             user = self.get_user_info()
+            if not user:
+                # user为空时，说明session过期
+                return self.invalid_msg
             flag = self.check_user(user)
             if flag:
                 try:

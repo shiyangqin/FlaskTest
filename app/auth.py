@@ -16,3 +16,9 @@ def auth_register():
 def auth_login():
     """账号登陆"""
     return AuthLogin().do()
+
+
+@auth_app.route('/info', methods=['GET'])
+def auth_info():
+    """获取账户信息"""
+    return AuthInfo().do()

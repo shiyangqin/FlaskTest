@@ -27,6 +27,8 @@ def load_config(path):
 filepath = os.path.join(os.path.dirname(__file__), 'sap.ini')
 conf = load_config(filepath)
 
+session_save_time = 60 * 60
+
 
 class LOG(object):
     """日志配置"""

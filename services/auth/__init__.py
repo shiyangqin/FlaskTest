@@ -1,7 +1,11 @@
 # -*- coding: UTF-8 -*-
-from services import Producer
+import hashlib
+from services import BaseProducer
 
 
-class AuthProducer(Producer):
-    pass
+class AuthProducer(BaseProducer):
+
+    @staticmethod
+    def get_md5(pwd):
+        return hashlib.md5(pwd.encode('utf-8')).hexdigest()
 
