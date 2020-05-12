@@ -37,11 +37,10 @@ class PostgreSQL(object):
     def __init__(self, host=PG.host, port=PG.port, database=PG.name, user=PG.user, password=PG.pwd, conn=None, dict_cursor=True):
         """创建连接"""
         self.__commit = False
+        logger.debug(">>>>>>PostgreSQL get conn>>>>>>")
         if conn:
-            logger.debug(">>>>>>PostgreSQL set conn>>>>>>")
             self.__conn = conn
         else:
-            logger.debug(">>>>>>PostgreSQL get conn>>>>>>")
             self.__conn = psycopg2.connect(
                 host=host,
                 port=port,
