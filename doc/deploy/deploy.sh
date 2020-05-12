@@ -8,4 +8,4 @@ docker exec -it pg sh /pg.start.sh
 docker pull redis:6.0
 docker run -itd --network=oa_net --network-alias redis_server -p 6379:6379 --name redis  redis:6.0 --requirepass "redis"
 docker build -f /opt/OA/doc/deploy/oa.Dockerfile -t oa:oa /opt
-docker run -itd --network=oa_net --network-alias oa_server -p 80:80 --name oa oa:oa 
+docker run -itd --network=oa_net --network-alias oa_server -p 80:80 --name oa oa:oa
