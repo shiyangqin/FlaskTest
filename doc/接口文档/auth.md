@@ -1,5 +1,6 @@
 + [注册账号](#注册账号)
 + [账号登陆](#账号登陆)
++ [获取用户信息](#获取用户信息)
 
 ___
 ### 注册账号
@@ -62,7 +63,40 @@ return：
         "email": "",
         "phone": "",
         "remark": "",
-        "role_id": 3,   # 1-超级管理员 2-管理员 3-普通用户
+        "role_name": "超级管理员/管理员/普通用户",
+        "function": [
+            "auth"
+        ],
+        "session": "dabb17217aa050e2a7ab8ac3a64fd1a3"
+    }
+}
+```
+
+
+___
+### 获取用户信息
+
+url: /auth/info
+
+methods：get
+
+params：无
+
+return：
+```python
+{
+    "status": "ok",
+    "data": {
+        "login_id": 5,
+        "user_name": "test",
+        "login_time": "2020-05-11 12:53:42",
+        "person_name": "",
+        "sex": "1",
+        "birthday": "",
+        "email": "",
+        "phone": "",
+        "remark": "",
+        "role_name": "超级管理员/管理员/普通用户",
         "function": [
             "auth"
         ],

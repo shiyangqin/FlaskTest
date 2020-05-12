@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
-import hashlib
+from utils.permission import Permission
 from services import BaseProducer
 
 
 class AuthProducer(BaseProducer):
 
-    @staticmethod
-    def get_md5(pwd):
-        return hashlib.md5(pwd.encode('utf-8')).hexdigest()
+    @Permission('auth')
+    def do(self, **kwargs):
+        return super().do(**kwargs)
 

@@ -1,11 +1,12 @@
 # -*- coding: UTF-8 -*-
 from flask import session
 
+from services import BaseProducer
 from utils.time_util import TimeUtil
 from . import AuthProducer
 
 
-class AuthRegister(AuthProducer):
+class AuthRegister(BaseProducer):
     def process(self, **kwargs):
         param = kwargs['request'].get_json()
 
@@ -34,8 +35,11 @@ class AuthRegister(AuthProducer):
         """
         param['login_id'] = self.get_pg().execute(sql, param)[0]['login_id']
 
-        # 添加用户角色
-        sql = "insert into sys_login_role(login_id, role_id) values(%(login_id)s, '3')"
+        # 添加用户角色,第一个用户为超级管理员
+        if param['login_id'] == 1:
+            sql = "insert into sys_login_role(login_id, role_id) values(%(login_id)s, '1')"
+        else:
+            sql = "insert into sys_login_role(login_id, role_id) values(%(login_id)s, '3')"
         self.get_pg().execute(sql, param)
 
         # 添加用户信息
@@ -67,7 +71,7 @@ class AuthRegister(AuthProducer):
         }
 
 
-class AuthLogin(AuthProducer):
+class AuthLogin(BaseProducer):
     def process(self, **kwargs):
         param = kwargs['request'].get_json()
 
@@ -122,11 +126,12 @@ class AuthLogin(AuthProducer):
                 b.email,
                 b.phone,
                 b.remark,
-                c.role_id
+                d.role_name
             from 
                 sys_login as a
                 inner join sys_person as b on a.login_id=b.login_id and a.login_id=%(login_id)s
                 inner join sys_login_role as c on a.login_id=c.login_id
+                inner join sys_role as d on c.role_id=d.role_id
         """
         user_info = self.get_pg().execute(sql, {"login_id": login_id})[0]
         sql = """
@@ -147,5 +152,4 @@ class AuthLogin(AuthProducer):
 
 class AuthInfo(AuthProducer):
     def process(self, **kwargs):
-
-        user_info = session['user_info']
+        return kwargs['user_info']

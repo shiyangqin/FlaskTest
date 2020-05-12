@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import hashlib
 import json
 import logging
 from datetime import date
@@ -132,3 +133,7 @@ class BaseProducer(PGProducer, RedisProducer):
             pass
 
         return res
+
+    @staticmethod
+    def get_md5(pwd):
+        return hashlib.md5(pwd.encode('utf-8')).hexdigest()
