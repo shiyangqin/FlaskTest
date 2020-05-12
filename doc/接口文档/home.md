@@ -17,6 +17,6 @@ json返回值统一格式为：
     
 + error： 异常信息，当status为"数据异常！"时才返回
 
-+ data: 返回数据，当status为"ok"时才返回
++ data: 返回数据，当status为"ok"时才返回，具体返回值请查看接口对应文档
 
 + [账户模块](auth.md)
