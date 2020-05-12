@@ -56,7 +56,7 @@ class RedisSessionInterface(SessionInterface):
         response.set_cookie(
             app.session_cookie_name,
             session.sid,
-            expires=self.get_expiration_time(app, session),     # session过期时间
+            # expires=self.get_expiration_time(app, session),     # session过期时间
             # httponly=self.get_cookie_httponly(app),             # httponly属性
             # domain=self.get_cookie_domain(app),                 # 域名
             # path=self.get_cookie_path(app),                     # 路径
