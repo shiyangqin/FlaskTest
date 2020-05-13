@@ -98,11 +98,7 @@ return：
         "email": "",
         "phone": "",
         "remark": "",
-        "role_name": "超级管理员/管理员/普通用户",
-        "function": [
-            "auth"
-        ],
-        "session": "dabb17217aa050e2a7ab8ac3a64fd1a3"
+        "role_name": "超级管理员/管理员/普通用户"
     }
 }
 ```

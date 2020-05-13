@@ -152,4 +152,6 @@ class AuthLogin(BaseProducer):
 
 class AuthInfo(AuthProducer):
     def process(self, **kwargs):
-        return kwargs['user_info']
+        user_info = kwargs['user_info']
+        del user_info['function'], user_info['session']
+        return user_info
