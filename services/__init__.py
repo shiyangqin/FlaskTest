@@ -54,14 +54,14 @@ class PGProducer(object):
         except Exception as e:
             pass
 
-    def _pg_rollback(self):
+    def pg_rollback(self):
         """数据库回滚"""
         if self._commit:
             logger.exception(">>>>>>PostgreSQL rollback")
             self._conn.rollback()
             self._commit = False
 
-    def _pg_commit(self):
+    def pg_commit(self):
         """数据库提交"""
         if self._commit:
             logger.debug(">>>>>>PostgreSQL commit ")
@@ -131,11 +131,11 @@ class BaseProducer(PGProducer, RedisProducer):
                 result_msg = json.dumps(result_msg, cls=DateEncoder).replace(': null', ': \"\"')
             if self._process_type == 1:
                 result_msg = msg
-            self._pg_commit()
+            self.pg_commit()
             return result_msg
         except Exception as e:
             # 异常处理逻辑
-            self._pg_rollback()
+            self.pg_rollback()
             logger.exception(e)
             result_msg['status'] = "数据异常！"
             result_msg['error'] = str(e)
