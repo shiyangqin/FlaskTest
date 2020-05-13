@@ -77,7 +77,7 @@ class AuthLogin(BaseProducer):
 
         # 查询账号是否已存在
         sql = "select * from sys_login where user_name=%(user_name)s and state='1'"
-        if not self.get_pg().execute(sql, param):
+        if not self.execute(sql, param):
             return {
                 "flag": False,
                 "msg": "账户不存在"
@@ -95,7 +95,7 @@ class AuthLogin(BaseProducer):
             and user_password=%(user_password)s 
             and state='1'
         """
-        login_id = self.get_pg().execute(sql, param)
+        login_id = self.execute(sql, param)
         if not login_id:
             sql = """
                 update sys_login set
@@ -105,14 +105,14 @@ class AuthLogin(BaseProducer):
                 and state='1'
                 returning repeat
             """
-            repeat = self.get_pg().execute(sql, param)[0]['repeat']
+            repeat = self.execute(sql, param)[0]['repeat']
             return {
                 "flag": False,
                 "msg": "密码错误，这是第" + str(repeat) + "次失败！"
             }
         login_id = login_id[0]['login_id']
         sql = "update sys_login set repeat='0',login_time=%(time)s where login_id=%(login_id)s"
-        self.get_pg().execute(sql, {"login_id": login_id, "time": TimeUtil.get_date()})
+        self.execute(sql, {"login_id": login_id, "time": TimeUtil.get_date()})
 
         # 获取用户信息
         sql = """
@@ -133,7 +133,7 @@ class AuthLogin(BaseProducer):
                 inner join sys_login_role as c on a.login_id=c.login_id
                 inner join sys_role as d on c.role_id=d.role_id
         """
-        user_info = self.get_pg().execute(sql, {"login_id": login_id})[0]
+        user_info = self.execute(sql, {"login_id": login_id})[0]
         sql = """
             select 
                 c.function_name 
@@ -142,7 +142,7 @@ class AuthLogin(BaseProducer):
                 inner join sys_role_function as b on a.role_id=b.role_id and a.login_id=%(login_id)s
                 inner join sys_function as c on b.function_id=c.function_id
         """
-        user_info['function'] = [f['function_name'] for f in self.get_pg().execute(sql, {"login_id": login_id})]
+        user_info['function'] = [f['function_name'] for f in self.execute(sql, {"login_id": login_id})]
 
         # 存储token与用户信息
         user_info['session'] = session.sid

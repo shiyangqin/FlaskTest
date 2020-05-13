@@ -7,8 +7,7 @@ from datetime import datetime
 
 import redis
 from flask import current_app, request
-
-from utils.db_util import PostgreSQL
+from psycopg2.extras import RealDictCursor
 
 logger = logging.getLogger(__name__)
 
@@ -27,17 +26,55 @@ class DateEncoder(json.JSONEncoder):
 class PGProducer(object):
     """PG数据库业务基类"""
     def __init__(self):
-        self._pg = None
+        self._commit = False
+        self._conn = None
+        self._cursor = None
+        self._dict_cursor = RealDictCursor
 
-    def get_pg(self, dict_cursor=True) -> PostgreSQL:
-        """获取pg数据库对象"""
-        if not self._pg:
-            self._pg = PostgreSQL(conn=current_app.pool.pg_pool.connection(), dict_cursor=dict_cursor)
-        return self._pg
+    def set_dict_cursor(self, dict_cursor=None):
+        """设置cursor_factory类型，必须在第一次调用execute前设置"""
+        self._dict_cursor = dict_cursor
+
+    def execute(self, sql, sql_dict=(), show_sql=False):
+        """执行sql语句，打印日志，设置提交标识，返回数据，数据库连接会在第一次使用时建立"""
+        if not self._conn:
+            logger.debug(">>>>>>PostgreSQL get conn ")
+            self._conn = current_app.pool.pg_pool.getconn()
+            if self._dict_cursor:
+                self._cursor = self._conn.cursor(cursor_factory=self._dict_cursor)
+            else:
+                self._cursor = self._conn.cursor()
+        self._cursor.execute(sql, sql_dict)
+        if show_sql:
+            logger.debug(">>>>>>sql>>>>>>: %s" % (self._cursor.mogrify(sql, sql_dict)))
+        if ('update ' in sql) or ('insert ' in sql) or ('delete ' in sql):
+            self._commit = True
+        try:
+            return self._cursor.fetchall()
+        except Exception as e:
+            pass
+
+    def pg_rollback(self):
+        """数据库回滚"""
+        if self._commit:
+            logger.exception(">>>>>>PostgreSQL rollback")
+            self._conn.rollback()
+            self._commit = False
+
+    def pg_commit(self):
+        """数据库提交"""
+        if self._commit:
+            logger.debug(">>>>>>PostgreSQL commit ")
+            self._conn.commit()
+            self._commit = False
 
     def __del__(self):
-        if self._pg:
-            del self._pg
+        if self._cursor:
+            self._cursor.close()
+            self._cursor = None
+        if self._conn:
+            logger.debug(">>>>>>PostgreSQL close")
+            current_app.pool.pg_pool.putconn(self._conn)
             self._pg = None
 
 
@@ -56,8 +93,7 @@ class RedisProducer(object):
         if self._redis.values():
             logger.debug(">>>>>>Redis close")
             for r in self._redis.values():
-                r.close()
-                del r
+                current_app.pool.redis_pool.release(r)
 
 
 class BaseProducer(PGProducer, RedisProducer):
@@ -95,13 +131,11 @@ class BaseProducer(PGProducer, RedisProducer):
                 result_msg = json.dumps(result_msg, cls=DateEncoder).replace(': null', ': \"\"')
             if self._process_type == 1:
                 result_msg = msg
-            if self._pg:
-                self._pg.commit()
+            self.pg_commit()
             return result_msg
         except Exception as e:
             # 异常处理逻辑
-            if self._pg:
-                self._pg.rollback()
+            self.pg_rollback()
             logger.exception(e)
             result_msg['status'] = "数据异常！"
             result_msg['error'] = str(e)
@@ -118,7 +152,7 @@ class BaseProducer(PGProducer, RedisProducer):
             "redis": False
         }
         try:
-            self.get_pg().execute("select * from sys_login")
+            self.execute("select * from sys_login")
             res['pg'] = True
         except Exception as e:
             pass
