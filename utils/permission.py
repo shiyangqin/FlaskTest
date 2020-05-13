@@ -1,4 +1,5 @@
 # -*- encoding:utf-8 -*-
+import copy
 import functools
 
 from flask import session
@@ -20,7 +21,7 @@ class Permission(object):
                 return self.invalid_msg
             if self.function in session['user_info']['function']:
                 try:
-                    kwargs['user_info'] = session['user_info']
+                    kwargs['user_info'] = copy.copy(session['user_info'])
                     return func(*args, **kwargs)
                 except TypeError as te:
                     raise te
