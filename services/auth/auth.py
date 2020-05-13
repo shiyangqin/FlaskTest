@@ -12,7 +12,7 @@ class AuthRegister(BaseProducer):
 
         # 查询账号是否已存在
         sql = "select * from sys_login where user_name=%(user_name)s and state='1'"
-        if self.get_pg().execute(sql, param):
+        if self.execute(sql, param):
             return {
                 "flag": False,
                 "msg": "账户已存在"
@@ -33,14 +33,14 @@ class AuthRegister(BaseProducer):
                 '1'
             ) returning login_id
         """
-        param['login_id'] = self.get_pg().execute(sql, param)[0]['login_id']
+        param['login_id'] = self.execute(sql, param)[0]['login_id']
 
         # 添加用户角色,第一个用户为超级管理员
         if param['login_id'] == 1:
             sql = "insert into sys_login_role(login_id, role_id) values(%(login_id)s, '1')"
         else:
             sql = "insert into sys_login_role(login_id, role_id) values(%(login_id)s, '3')"
-        self.get_pg().execute(sql, param)
+        self.execute(sql, param)
 
         # 添加用户信息
         param['birthday'] = None if not param['birthday'] else param['birthday']
@@ -64,7 +64,7 @@ class AuthRegister(BaseProducer):
                 %(remark)s
             )
         """
-        self.get_pg().execute(sql, param)
+        self.execute(sql, param)
         return {
             "flag": True,
             "msg": "注册成功"
