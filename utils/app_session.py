@@ -27,11 +27,8 @@ class RedisSessionInterface(SessionInterface):
     serializer = pickle
     session_class = SessionObj
 
-    def __init__(self, conn=None):
-        if conn:
-            self.conn = conn
-        else:
-            self.conn = redis.Redis(host=REDIS.host, port=REDIS.port, password=REDIS.pwd, db=REDIS.session)
+    def __init__(self, connection_pool):
+        self.conn = redis.Redis(connection_pool=connection_pool, db=REDIS.session)
 
     def open_session(self, app, request):
         """获取Session"""

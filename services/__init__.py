@@ -8,8 +8,7 @@ from datetime import datetime
 import redis
 from flask import current_app, request
 
-from config import REDIS
-from utils.pg_util import PostgreSQL
+from utils.db_util import PostgreSQL
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +32,7 @@ class PGProducer(object):
     def get_pg(self, dict_cursor=True) -> PostgreSQL:
         """获取pg数据库对象"""
         if not self._pg:
-            self._pg = PostgreSQL(conn=current_app.pool.connection(), dict_cursor=dict_cursor)
+            self._pg = PostgreSQL(conn=current_app.pool.pg_pool.connection(), dict_cursor=dict_cursor)
         return self._pg
 
     def __del__(self):
@@ -49,13 +48,13 @@ class RedisProducer(object):
 
     def get_redis(self, db) -> redis.Redis:
         if db not in self._redis:
-            logger.debug(">>>>>>Redis get conn>>>>>>:" + "db=" + str(db))
-            self._redis[db] = redis.Redis(host=REDIS.host, port=REDIS.port, password=REDIS.pwd, db=db)
+            logger.debug(">>>>>>Redis get conn: " + "db=" + str(db))
+            self._redis[db] = redis.Redis(connection_pool=current_app.pool.redis_pool, db=db)
         return self._redis[db]
 
     def __del__(self):
         if self._redis.values():
-            logger.debug(">>>>>>Redis close>>>>>>")
+            logger.debug(">>>>>>Redis close")
             for r in self._redis.values():
                 r.close()
                 del r

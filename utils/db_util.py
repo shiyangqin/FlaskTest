@@ -1,34 +1,40 @@
 # -*- coding: UTF-8 -*-
+import redis
 import logging
 
 import psycopg2
 from DBUtils.PooledDB import PooledDB
 from psycopg2.extras import RealDictCursor
 
-from config import PG
+from config import PG, REDIS
 
 logger = logging.getLogger(__name__)
 
 
-class PgPool(object):
+class DBPool(object):
     """pg数据库连接池"""
 
-    def __init__(self, host=PG.host, port=PG.port, database=PG.name, user=PG.user, password=PG.pwd):
-        logger.debug(">>>>>>pg_pool start create>>>>>>")
-        self.__pool = PooledDB(
+    def __init__(self):
+        logger.debug(">>>>>>pg_pool start create")
+        self.pg_pool = PooledDB(
             psycopg2,
             mincached=5,
             blocking=True,
-            host=host,
-            port=port,
-            database=database,
-            user=user,
-            password=password
+            host=PG.host,
+            port=PG.port,
+            database=PG.name,
+            user=PG.user,
+            password=PG.pwd
         )
-        logger.debug(">>>>>>pg_pool create success>>>>>>")
+        logger.debug(">>>>>>pg_pool create success")
 
-    def get_pool(self):
-        return self.__pool
+        logger.debug(">>>>>>redis_pool start create")
+        self.redis_pool = redis.ConnectionPool(
+            host=REDIS.host,
+            port=REDIS.port,
+            password=REDIS.pwd
+        )
+        logger.debug(">>>>>>redis_pool create success")
 
 
 class PostgreSQL(object):
@@ -37,7 +43,7 @@ class PostgreSQL(object):
     def __init__(self, host=PG.host, port=PG.port, database=PG.name, user=PG.user, password=PG.pwd, conn=None, dict_cursor=True):
         """创建连接"""
         self.__commit = False
-        logger.debug(">>>>>>PostgreSQL get conn>>>>>>")
+        logger.debug(">>>>>>PostgreSQL get conn")
         if conn:
             self.__conn = conn
         else:
@@ -61,7 +67,7 @@ class PostgreSQL(object):
         if self.__conn:
             self.__conn.close()
             self.__conn = None
-        logger.debug(">>>>>>PostgreSQL close>>>>>>")
+        logger.debug(">>>>>>PostgreSQL close")
 
     def execute(self, sql, sql_dict=(), show_sql=False):
         """执行sql语句，打印日志，设置提交标识，返回数据"""
@@ -78,14 +84,14 @@ class PostgreSQL(object):
     def rollback(self):
         """数据库回滚"""
         if self.__commit:
-            logger.exception(">>>>>>PostgreSQL rollback>>>>>>")
+            logger.exception(">>>>>>PostgreSQL rollback")
             self.__conn.rollback()
             self.__commit = False
 
     def commit(self):
         """数据库提交"""
         if self.__commit:
-            logger.debug(">>>>>>PostgreSQL commit>>>>>>")
+            logger.debug(">>>>>>PostgreSQL commit ")
             self.__conn.commit()
             self.__commit = False
 
