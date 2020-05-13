@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-from flask import session
+from flask import request, session
 
 from services import BaseProducer
 from utils.time_util import TimeUtil
@@ -8,7 +8,7 @@ from . import AuthProducer
 
 class AuthRegister(BaseProducer):
     def process(self, **kwargs):
-        param = kwargs['request'].get_json()
+        param = request.get_json()
 
         # 查询账号是否已存在
         sql = "select * from sys_login where user_name=%(user_name)s and state='1'"
@@ -73,7 +73,7 @@ class AuthRegister(BaseProducer):
 
 class AuthLogin(BaseProducer):
     def process(self, **kwargs):
-        param = kwargs['request'].get_json()
+        param = request.get_json()
 
         # 查询账号是否已存在
         sql = "select * from sys_login where user_name=%(user_name)s and state='1'"
