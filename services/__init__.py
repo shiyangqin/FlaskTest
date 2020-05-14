@@ -36,7 +36,13 @@ class PGProducer(object):
         self._dict_cursor = dict_cursor
 
     def execute(self, sql, sql_dict=(), show_sql=False):
-        """执行sql语句，打印日志，设置提交标识，返回数据，数据库连接会在第一次使用时建立"""
+        """
+        执行sql语句，数据库连接会在第一次使用时建立
+        :param sql:sql语句
+        :param sql_dict:sql参数,格式：dict
+        :param show_sql:是否打印sql日志
+        :return:sql查询结果
+        """
         if not self._conn:
             logger.debug(">>>>>>PostgreSQL get conn ")
             self._conn = current_app.pool.pg_pool.getconn()
@@ -54,18 +60,18 @@ class PGProducer(object):
         except Exception as e:
             pass
 
-    def _pg_rollback(self):
-        """数据库回滚"""
-        if self._commit:
-            logger.exception(">>>>>>PostgreSQL rollback")
-            self._conn.rollback()
-            self._commit = False
-
     def _pg_commit(self):
-        """数据库提交"""
+        """pg数据库提交"""
         if self._commit:
             logger.debug(">>>>>>PostgreSQL commit ")
             self._conn.commit()
+            self._commit = False
+
+    def _pg_rollback(self):
+        """pg数据库回滚"""
+        if self._commit:
+            logger.exception(">>>>>>PostgreSQL rollback")
+            self._conn.rollback()
             self._commit = False
 
     def __del__(self):
@@ -84,6 +90,11 @@ class RedisProducer(object):
         self._redis = dict()
 
     def get_redis(self, db) -> redis.Redis:
+        """
+        获取redis连接
+        :param db: db数
+        :return:redis.Redis对象
+        """
         if db not in self._redis:
             logger.debug(">>>>>>Redis get conn: " + "db=" + str(db))
             self._redis[db] = redis.Redis(connection_pool=current_app.pool.redis_pool, db=db)

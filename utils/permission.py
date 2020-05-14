@@ -17,7 +17,6 @@ class Permission(object):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             if 'user_info' not in session:
-                # user_info不在session中，说明session过期
                 return self.invalid_msg
             if self.function in session['user_info']['function']:
                 try:

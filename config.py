@@ -6,9 +6,9 @@ import os
 
 def load_config(path):
     """
-    @summary: 加载配置文件
-    @param: path,指定配置文件路径
-    @return: dict, 详细配置
+    加载配置文件
+    :param path: 指定配置文件路径
+    :return: dict, 详细配置
     """
     cf = configparser.ConfigParser()
     # if "Linux" == platform.system(): # 这里可以指定从linux下的指定文件读取配置，可以实现配置文件与项目分离

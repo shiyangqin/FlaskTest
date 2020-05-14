@@ -38,3 +38,5 @@ class DBPool(object):
         self.redis_pool.disconnect()
         del self.pg_pool
         del self.redis_pool
+        self.pg_pool = None
+        self.redis_pool = None

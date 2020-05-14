@@ -19,6 +19,7 @@ class AuthRegister(BaseProducer):
             }
 
         param['user_password'] = self.get_md5(param['user_password'])
+
         # 添加账号信息
         sql = """
             insert into sys_login(
@@ -144,7 +145,7 @@ class AuthLogin(BaseProducer):
         """
         user_info['function'] = [f['function_name'] for f in self.execute(sql, {"login_id": login_id})]
 
-        # 存储token与用户信息
+        # 设置session
         user_info['session'] = session.sid
         session['user_info'] = user_info
         return user_info
