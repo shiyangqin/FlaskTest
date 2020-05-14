@@ -14,9 +14,8 @@ app = Flask(__name__)
 app.register_blueprint(main_app)
 app.register_blueprint(auth_app)
 
-pool = DBPool()
 app.app_context().push()
-current_app.pool = pool
+current_app.pool = DBPool()
 
 app.session_interface = RedisSessionInterface(connection_pool=current_app.pool.redis_pool)
 
