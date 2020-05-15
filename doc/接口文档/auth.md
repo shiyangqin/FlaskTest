@@ -1,17 +1,20 @@
+# 账户模块
+
 + [注册账号](#注册账号)
 + [账号登陆](#账号登陆)
 + [获取用户信息](#获取用户信息)
 
-___
 前端传输密码时需加密，后端对前端加密后的密码再次处理后存储，前端只需保证在注册和登陆时，传输的密文一致即可
 ___
-### 注册账号
+
+## 注册账号
 
 url: /auth/register
 
 methods：post
 
 params：
+
 ```python
 {
     "user_name": "",        # 账号
@@ -26,6 +29,7 @@ params：
 ```
 
 return：
+
 ```python
 {
     "status": "ok",
@@ -37,13 +41,15 @@ return：
 ```
 
 ___
-### 账号登陆
+
+## 账号登陆
 
 url: /auth/register
 
 methods：post
 
 params：
+
 ```python
 {
     "user_name": "",        # 账号
@@ -52,6 +58,7 @@ params：
 ```
 
 return：
+
 ```python
 {
     "status": "ok",
@@ -74,9 +81,9 @@ return：
 }
 ```
 
-
 ___
-### 获取用户信息
+
+## 获取用户信息
 
 url: /auth/info
 
@@ -85,6 +92,7 @@ methods：get
 params：无
 
 return：
+
 ```python
 {
     "status": "ok",
