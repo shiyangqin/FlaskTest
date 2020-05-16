@@ -14,12 +14,13 @@ logger = logging.getLogger(__name__)
 
 class BaseProducer(PGProducer, RedisProducer):
     """
-    逻辑处理基类：
-        do：统一进行异常处理和数据库的连接、提交、异常回滚、关闭等操作，调用process逻辑处理函数
-        process：只负责逻辑处理，创建子类重写，数据库通过self.get_pg()获取
-        _process_type：process函数返回值类别
-                        0-默认值，将process返回的msg作为json处理，用于大部分业务
-                        1-将process返回的msg直接返回给前端，用于下载等业务
+    逻辑处理基类
+
+    子类继承并重写process函数实现业务开发
+    权限验证通过在子类中使用Permission装饰器设置
+
+    process_type: 0-默认值，将process返回的msg作为json处理，用于大部分业务
+                  1-将process返回的msg直接返回给前端，用于下载等业务
     """
 
     def __init__(self):

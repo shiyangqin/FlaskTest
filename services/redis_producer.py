@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 class RedisProducer(object):
     """redis业务基类"""
+
     def __init__(self):
         self._redis = dict()
 

@@ -8,16 +8,30 @@ logger = logging.getLogger(__name__)
 
 
 class PGProducer(object):
-    """PG数据库业务基类"""
+    """
+    PG数据库业务基类
+
+    commit: 提交标识，默认为false，当执行的sql包含更新数据操作时置为true，提交和回滚时使用，避免多余的提交回滚操作
+    conn: pg数据库连接对象
+    cursor: cursor对象
+    cursor_factory: 获取cursor对象时的cursor_factory属性，默认为RealDictCursor，通过set_cursor_factory进行修改
+    """
+
     def __init__(self):
         self._commit = False
         self._conn = None
         self._cursor = None
-        self._dict_cursor = RealDictCursor
+        self._cursor_factory = RealDictCursor
 
-    def set_dict_cursor(self, dict_cursor=None):
-        """设置cursor_factory类型，必须在第一次调用execute前设置"""
-        self._dict_cursor = dict_cursor
+    def set_cursor_factory(self, cursor_factory=None):
+        """设置cursor_factory属性"""
+        self._cursor_factory = cursor_factory
+        if self._cursor:
+            self._cursor.close()
+            if self._cursor_factory:
+                self._cursor = self._conn.cursor(cursor_factory=self._cursor_factory)
+            else:
+                self._cursor = self._conn.cursor()
 
     def execute(self, sql, sql_dict=(), show_sql=False):
         """
@@ -30,8 +44,8 @@ class PGProducer(object):
         if not self._conn:
             logger.debug(">>>>>>PostgreSQL get conn ")
             self._conn = current_app.pool.pg_pool.getconn()
-            if self._dict_cursor:
-                self._cursor = self._conn.cursor(cursor_factory=self._dict_cursor)
+            if self._cursor_factory:
+                self._cursor = self._conn.cursor(cursor_factory=self._cursor_factory)
             else:
                 self._cursor = self._conn.cursor()
         self._cursor.execute(sql, sql_dict)

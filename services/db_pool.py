@@ -13,6 +13,7 @@ class DBPool(object):
     """pg数据库连接池"""
 
     def __init__(self):
+        # pg数据库连接池
         logger.debug(">>>>>>pg_pool start create")
         self.pg_pool = SimpleConnectionPool(
             2,
@@ -25,6 +26,7 @@ class DBPool(object):
         )
         logger.debug(">>>>>>pg_pool create success")
 
+        # redis连接池
         logger.debug(">>>>>>redis_pool start create")
         self.redis_pool = redis.ConnectionPool(
             host=REDIS.host,

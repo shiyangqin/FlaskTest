@@ -6,6 +6,7 @@ from datetime import datetime
 
 class DateEncoder(json.JSONEncoder):
     """解决json不能序列化时间问题"""
+
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.strftime('%Y-%m-%d %H:%M:%S')
