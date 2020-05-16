@@ -12,7 +12,7 @@
  Target Server Version : 120002
  File Encoding         : 65001
 
- Date: 16/05/2020 16:55:39
+ Date: 16/05/2020 17:25:42
 */
 
 
@@ -22,9 +22,7 @@
 DROP SEQUENCE IF EXISTS "public"."sys_user_id_seq";
 CREATE SEQUENCE "public"."sys_user_id_seq" 
 INCREMENT 1
-MINVALUE  1
 MAXVALUE 9223372036854775807
-START 1
 CACHE 1;
 
 -- ----------------------------
@@ -132,7 +130,6 @@ CREATE TABLE "public"."sys_user_role" (
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."sys_user_id_seq"', 1, true);
 
 -- ----------------------------
 -- Primary Key structure for table sys_function
