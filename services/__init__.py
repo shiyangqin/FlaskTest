@@ -3,6 +3,7 @@ import hashlib
 import json
 import logging
 
+import redis
 from flask import request
 
 from services.date_encoder import DateEncoder
@@ -12,7 +13,7 @@ from services.redis_producer import RedisProducer
 logger = logging.getLogger(__name__)
 
 
-class BaseProducer(PGProducer, RedisProducer):
+class BaseProducer(object):
     """
     逻辑处理基类
 
@@ -24,9 +25,19 @@ class BaseProducer(PGProducer, RedisProducer):
     """
 
     def __init__(self):
-        PGProducer.__init__(self)
-        RedisProducer.__init__(self)
         self._process_type = 0
+        self._pg = None
+        self._redis = None
+
+    def get_pg(self) -> PGProducer:
+        if not self._pg:
+            self._pg = PGProducer()
+        return self._pg
+
+    def get_redis(self, db) -> redis.Redis:
+        if not self._redis:
+            self._redis = RedisProducer()
+        return self._redis.get_redis(db)
 
     def set_process_type(self, process_type=1):
         """设置返回值类型"""
@@ -48,19 +59,24 @@ class BaseProducer(PGProducer, RedisProducer):
                 result_msg = json.dumps(result_msg, cls=DateEncoder).replace(': null', ': \"\"')
             if self._process_type == 1:
                 result_msg = msg
-            self._pg_commit()
+            if self._pg:
+                self._pg.commit()
             return result_msg
         except Exception as e:
             # 异常处理逻辑
-            self._pg_rollback()
+            if self._pg:
+                self._pg.rollback()
             logger.exception(e)
             result_msg['status'] = "数据异常！"
             result_msg['error'] = str(e)
             return json.dumps(result_msg)
-
-    def __del__(self):
-        PGProducer.__del__(self)
-        RedisProducer.__del__(self)
+        finally:
+            if self._pg:
+                del self._pg
+                self._pg = None
+            if self._redis:
+                del self._redis
+                self._redis = None
 
     def process(self, **kwargs):
         """业务代码逻辑部分,在子类中重写process来处理业务"""
@@ -69,15 +85,14 @@ class BaseProducer(PGProducer, RedisProducer):
             "redis": False
         }
         try:
-            self.execute("select * from sys_login")
+            self.get_pg().execute("select * from sys_user")
             res['pg'] = True
         except Exception as e:
             pass
 
         try:
-            redis_coon = self.get_redis(0)
-            redis_coon.append('test', '0')
-            redis_coon.delete('test')
+            self.get_redis(0).append('test', '0')
+            self.get_redis(0).delete('test')
             res['redis'] = True
         except Exception as e:
             pass
