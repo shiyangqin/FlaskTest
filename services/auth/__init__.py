@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from services import BaseProducer
-from utils.permission import Permission
+from services.permission import Permission
 
 
 class AuthProducer(BaseProducer):

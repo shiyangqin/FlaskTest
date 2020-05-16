@@ -8,7 +8,7 @@ from flask import session
 class Permission(object):
     """类函数权限验证装饰器"""
 
-    def __init__(self, function, fail_msg='{"status": "not allow"}', invalid_msg='{"status": "time out"}'):
+    def __init__(self, function='', fail_msg='{"status": "not allow"}', invalid_msg='{"status": "time out"}'):
         self.function = function
         self.failMsg = fail_msg
         self.invalid_msg = invalid_msg
@@ -18,7 +18,7 @@ class Permission(object):
         def wrapper(*args, **kwargs):
             if 'user_info' not in session:
                 return self.invalid_msg
-            if self.function in session['user_info']['function']:
+            if not self.function or self.function in session['user_info']['function']:
                 try:
                     kwargs['user_info'] = copy.copy(session['user_info'])
                     return func(*args, **kwargs)

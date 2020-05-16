@@ -5,8 +5,8 @@ import logging_config
 from app import main_app
 from app.auth import auth_app
 from config import LOG
-from utils.app_session import RedisSessionInterface
-from utils.db_pool import DBPool
+from services.app_session import RedisSessionInterface
+from services.db_pool import DBPool
 
 logging_config.config_logging(LOG.file_name, LOG.level)
 
