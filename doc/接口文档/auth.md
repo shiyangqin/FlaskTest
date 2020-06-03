@@ -11,7 +11,7 @@ ___
 
 url: /auth/register
 
-methods：post
+method：post
 
 params：
 
@@ -46,7 +46,7 @@ ___
 
 url: /auth/register
 
-methods：post
+method：post
 
 params：
 
@@ -87,7 +87,7 @@ ___
 
 url: /auth/info
 
-methods：get
+method：get
 
 params：无
 
