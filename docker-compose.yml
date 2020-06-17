@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+
+  oa_pg_server:
+    build:
+      context: .
+      dockerfile: ./doc/deploy/pg.Dockerfile
+    image: pg-server:oa
+    container_name: oa_pg_server
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes: 
+      - oa_pg_data:/var/lib/postgresql/data
+    networks:
+      oa-net:
+        aliases:
+          - oa_pg_server
+
+  oa_redis-server:
+    image: redis:6.0
+    container_name: oa_redis_server
+    restart: always
+    command: redis-server --requirepass redis
+    volumes:
+      - oa_redis_data:/data
+    networks:
+      oa-net:
+        aliases:
+          - oa_redis_server
+
+  oa-server:
+    build:
+      context: .
+      dockerfile: ./doc/deploy/oa.Dockerfile
+    image: oa-server:oa
+    container_name: oa-server
+    restart: always
+    command: ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
+    depends_on:
+      - oa_pg_server
+      - oa_redis-server
+    ports:
+      - "80:80"
+    networks:
+      oa-net:
+        aliases:
+          - oa_redis_server
+
+networks:
+  oa-net:
+    name: oa-net
+
+volumes:
+  oa_pg_data:
+    name: oa_pg_data
+  oa_redis_data:
+    name: oa_redis_data
+ 

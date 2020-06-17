@@ -1,6 +1,6 @@
 FROM centos:centos7
 
-ADD ./OA /opt/OA
+ADD ./ /opt/OA/
 
 RUN yum install -y gcc openssl-devel bzip2-devel expat-devel gdbm-devel readline-devel sqlite-devel libffi-devel tk-devel wget curl-devel make \
     && wget -P /opt https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tar.xz \
