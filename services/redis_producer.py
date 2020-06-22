@@ -14,8 +14,7 @@ class RedisProducer(object):
         self._redis = dict()
 
     def get_redis(self, db) -> redis.Redis:
-        """
-        获取redis连接
+        """获取redis连接
         :param db: db数
         :return:redis.Redis对象
         """
@@ -28,4 +27,4 @@ class RedisProducer(object):
         if self._redis.values():
             logger.debug(">>>>>>Redis close")
             for r in self._redis.values():
-                current_app.pool.redis_pool.release(r)
+                r.close()

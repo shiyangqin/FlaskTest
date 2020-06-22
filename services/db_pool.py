@@ -1,8 +1,9 @@
 # -*- coding: UTF-8 -*-
 import logging
+import threading
 
 import redis
-from psycopg2.pool import SimpleConnectionPool
+from psycopg2.pool import ThreadedConnectionPool
 
 from config import PG, REDIS
 
@@ -12,10 +13,12 @@ logger = logging.getLogger(__name__)
 class DBPool(object):
     """pg数据库连接池"""
 
+    _instance_lock = threading.Lock()
+
     def __init__(self):
         # pg数据库连接池
         logger.debug(">>>>>>pg_pool start create")
-        self.pg_pool = SimpleConnectionPool(
+        self.pg_pool = ThreadedConnectionPool(
             2,
             5,
             host=PG.host,
@@ -34,6 +37,13 @@ class DBPool(object):
             password=REDIS.pwd
         )
         logger.debug(">>>>>>redis_pool create success")
+
+    def __new__(cls):
+        if not hasattr(DBPool, "_instance"):
+            with DBPool._instance_lock:
+                if not hasattr(DBPool, "_instance"):
+                    DBPool._instance = object.__new__(cls)
+        return DBPool._instance
 
     def __del__(self):
         self.pg_pool.closeall()

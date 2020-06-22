@@ -8,9 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class PGProducer(object):
-    """
-    PG数据库业务基类
-
+    """PG数据库业务基类
     commit: 提交标识，默认为false，当执行的sql包含更新数据操作时置为true，提交和回滚时使用，避免多余的提交回滚操作
     conn: pg数据库连接对象
     cursor: cursor对象
@@ -26,12 +24,11 @@ class PGProducer(object):
             self._cursor = self._conn.cursor()
 
     def execute(self, sql, sql_dict=(), show_sql=False):
-        """
-        执行sql语句
+        """执行sql语句
         :param sql:sql语句
         :param sql_dict:sql参数,格式：dict
         :param show_sql:是否打印sql日志
-        :return:sql查询结果
+        :return:sql返回值
         """
         self._cursor.execute(sql, sql_dict)
         if show_sql:
@@ -63,5 +60,5 @@ class PGProducer(object):
             self._cursor = None
         if self._conn:
             logger.debug(">>>>>>PostgreSQL close")
-            current_app.pool.pg_pool.putconn(self._conn)
-            self._pg = None
+            self._conn.close()
+            self._conn = None
