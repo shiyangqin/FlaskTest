@@ -32,7 +32,7 @@ def config_logging(file_name="log.txt", log_level="NOSET"):
 
     file_name = os.path.join(logs_dir, file_name)
     rotating_file_handler = \
-        logging.handlers.RotatingFileHandler(filename=file_name, maxBytes=1024 * 1024 * 50, backupCount=5)
+        logging.handlers.RotatingFileHandler(filename=file_name)
     formatter = logging.Formatter("%(asctime)s %(name)-12s %(process)d %(levelname)-8s %(lineno)-6s %(message)s")
     '''
     format: 指定输出的格式和内容，format可以输出很多有用信息，如上例所示:
