@@ -46,9 +46,11 @@ class DBPool(object):
         return DBPool._instance
 
     def __del__(self):
-        self.pg_pool.closeall()
-        self.redis_pool.disconnect()
-        del self.pg_pool
-        del self.redis_pool
-        self.pg_pool = None
-        self.redis_pool = None
+        if hasattr(self, "pg_pool") and self.pg_pool:
+            self.pg_pool.closeall()
+            del self.pg_pool
+            self.pg_pool = None
+        if hasattr(self, "redis_pool") and self.redis_pool:
+            self.redis_pool.disconnect()
+            del self.redis_pool
+            self.redis_pool = None
