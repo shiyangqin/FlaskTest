@@ -16,12 +16,7 @@ class Permission(object):
     def __call__(self, func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            if not self.function:
-                # 当权限为空时，无需验证，直接返回
-                if 'user_info' in session:
-                    kwargs['user_info'] = copy.copy(session['user_info'])
-                return func(*args, **kwargs)
-            else:
+            if self.function:
                 # 当权限不为空时
                 if 'user_info' not in session:
                     # 没有账号信息则代表未登录或session已过期，返回time out
@@ -35,4 +30,9 @@ class Permission(object):
                 else:
                     # 权限验证失败，返回not allow
                     return self.failMsg
+            else:
+                # 当权限为空时，无需验证，直接返回
+                if 'user_info' in session:
+                    kwargs['user_info'] = copy.copy(session['user_info'])
+                return func(*args, **kwargs)
         return wrapper
