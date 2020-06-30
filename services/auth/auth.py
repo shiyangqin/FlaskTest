@@ -44,8 +44,8 @@ class AuthRegister(BaseProducer):
         self.get_pg().execute(sql, param)
 
         # 添加用户信息
-        param['birthday'] = None if not param['birthday'] else param['birthday']
-        param['phone'] = None if not param['phone'] else param['phone']
+        param['birthday'] = param['birthday'] or None
+        param['phone'] = param['phone'] or None
         sql = """
             insert into sys_person(
                 user_id,
