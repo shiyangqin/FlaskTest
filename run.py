@@ -8,7 +8,7 @@ from config import LOG
 from services.app_session import RedisSessionInterface
 from services.db_pool import DBPool
 
-logging_config.config_logging(LOG.file_name, LOG.level)
+logging_config.logging_config(LOG.file_name, LOG.level)
 
 app = Flask(__name__)
 app.register_blueprint(main_app)
