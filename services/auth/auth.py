@@ -151,6 +151,13 @@ class AuthLogin(BaseProducer):
         return user_info
 
 
+class AuthLogout(AuthProducer):
+    def process(self, **kwargs):
+        del session['user_info']
+        self.set_process_type(1)
+        return '{"status": "time out"}'
+
+
 class AuthInfo(AuthProducer):
     def process(self, **kwargs):
         user_info = kwargs['user_info']

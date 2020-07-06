@@ -44,8 +44,9 @@ class RedisSessionInterface(SessionInterface):
     def save_session(self, app, session, response):
         """保存Session"""
         if not session:
-            self.conn.delete(session.sid)
-            response.delete_cookie(app.session_cookie_name)
+            if session.modified:
+                self.conn.delete(session.sid)
+                response.delete_cookie(app.session_cookie_name)
             return
         session_data = self.serializer.dumps(dict(session))
         self.conn.setex(session.sid, session_save_time, session_data)
@@ -55,6 +56,6 @@ class RedisSessionInterface(SessionInterface):
             # expires=self.get_expiration_time(app, session),     # session过期时间
             # path=self.get_cookie_path(app),                     # 路径
             # domain=self.get_cookie_domain(app),                 # 域名
-            # secure=self.get_cookie_secure(app)                  # secure属性
-            # httponly=self.get_cookie_httponly(app),             # httponly属性
+            secure=self.get_cookie_secure(app),                   # secure属性
+            httponly=self.get_cookie_httponly(app)                # httponly属性
         )
