@@ -45,8 +45,7 @@ class RedisSessionInterface(SessionInterface):
         """保存Session"""
         if not session:
             self.conn.delete(session.sid)
-            if session.modified:
-                response.delete_cookie(app.session_cookie_name)
+            response.delete_cookie(app.session_cookie_name)
             return
         session_data = self.serializer.dumps(dict(session))
         self.conn.setex(session.sid, session_save_time, session_data)

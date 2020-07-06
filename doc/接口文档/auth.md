@@ -44,7 +44,7 @@ ___
 
 ## 账号登陆
 
-url: /auth/register
+url: /auth/login
 
 method：post
 
