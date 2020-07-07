@@ -100,5 +100,16 @@ class BaseProducer(object):
         return res
 
     @staticmethod
-    def get_md5(pwd):
+    def get_new_id(pwd):
         return hashlib.md5(pwd.encode('utf-8')).hexdigest()
+
+    @staticmethod
+    def get_file_md5(file):
+        """获取文件md5"""
+        my_hash = hashlib.md5()
+        while True:
+            b = file.read(4096)
+            if not b:
+                break
+            my_hash.update(b)
+        return my_hash.hexdigest()

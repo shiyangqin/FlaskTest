@@ -15,23 +15,21 @@ return：
 ```python
 {
     "status": "ok",
-    "data": "E:\\me\\Qinsy\\flask_test\\file\\1586505723.9923966"
+    "data": {
+        "file_name": "Antiy.txt",
+        "file_md5": "8000c660bc3002b44b9fec2f7a5a203f",
+        "file_path": "E:\\me\\OA\\file\\8000c660bc3002b44b9fec2f7a5a203f"
+    }
 }
 ```
 
 ___
 ## 文件下载
 
-url: /file/download
+url: /file/download/<file_md5>
 
 method：get
 
-params：
-```python
-{
-    "file_path": "E:\\me\\Qinsy\\flask_test\\file\\1586505723.9923966",
-    "file_path": "test.xls"
-}
-```
+params：无
 
-return：test.xls
+return：file

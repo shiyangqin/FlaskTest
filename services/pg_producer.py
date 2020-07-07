@@ -50,7 +50,7 @@ class PGProducer(object):
     def rollback(self):
         """pg数据库回滚"""
         if self._commit:
-            logger.exception(">>>>>>PostgreSQL rollback")
+            logger.debug(">>>>>>PostgreSQL rollback")
             self._conn.rollback()
             self._commit = False
 

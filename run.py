@@ -4,6 +4,7 @@ from flask import Flask, current_app
 import logging_config
 from app import main_app
 from app.auth import auth_app
+from app.file import file_app
 from config import LOG
 from services.app_session import RedisSessionInterface
 from services.db_pool import DBPool
@@ -13,6 +14,7 @@ logging_config.logging_config(LOG.file_name, LOG.level)
 app = Flask(__name__)
 app.register_blueprint(main_app)
 app.register_blueprint(auth_app)
+app.register_blueprint(file_app)
 
 app.app_context().push()
 current_app.pool = DBPool()

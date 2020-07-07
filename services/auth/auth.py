@@ -18,7 +18,7 @@ class AuthRegister(BaseProducer):
                 "msg": "账户已存在"
             }
 
-        param['user_password'] = self.get_md5(param['user_password'])
+        param['user_password'] = self.get_new_id(param['user_password'])
 
         # 添加账号信息
         sql = """
@@ -85,7 +85,7 @@ class AuthLogin(BaseProducer):
             }
 
         # 验证账号密码
-        param['user_password'] = self.get_md5(param['user_password'])
+        param['user_password'] = self.get_new_id(param['user_password'])
         sql = """
             select 
                 user_id 

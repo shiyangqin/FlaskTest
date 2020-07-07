@@ -12,7 +12,7 @@
  Target Server Version : 120002
  File Encoding         : 65001
 
- Date: 16/05/2020 17:25:42
+ Date: 07/07/2020 14:54:34
 */
 
 
@@ -24,6 +24,22 @@ CREATE SEQUENCE "public"."sys_user_id_seq"
 INCREMENT 1
 MAXVALUE 9223372036854775807
 CACHE 1;
+
+-- ----------------------------
+-- Table structure for file_info
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."file_info";
+CREATE TABLE "public"."file_info" (
+  "file_md5" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
+  "file_name" varchar(32) COLLATE "pg_catalog"."default" NOT NULL,
+  "file_path" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
+  "r_time" timestamp(6) NOT NULL DEFAULT now()
+)
+;
+
+-- ----------------------------
+-- Records of file_info
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_function
@@ -40,6 +56,7 @@ CREATE TABLE "public"."sys_function" (
 -- Records of sys_function
 -- ----------------------------
 INSERT INTO "public"."sys_function" VALUES (1, 'auth', '账户权限');
+INSERT INTO "public"."sys_function" VALUES (2, 'file', '文件权限');
 
 -- ----------------------------
 -- Table structure for sys_person
@@ -93,6 +110,9 @@ CREATE TABLE "public"."sys_role_function" (
 INSERT INTO "public"."sys_role_function" VALUES (1, 1);
 INSERT INTO "public"."sys_role_function" VALUES (2, 1);
 INSERT INTO "public"."sys_role_function" VALUES (3, 1);
+INSERT INTO "public"."sys_role_function" VALUES (1, 2);
+INSERT INTO "public"."sys_role_function" VALUES (3, 2);
+INSERT INTO "public"."sys_role_function" VALUES (2, 2);
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -130,6 +150,11 @@ CREATE TABLE "public"."sys_user_role" (
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
+
+-- ----------------------------
+-- Primary Key structure for table file_info
+-- ----------------------------
+ALTER TABLE "public"."file_info" ADD CONSTRAINT "file_info_pkey" PRIMARY KEY ("file_md5");
 
 -- ----------------------------
 -- Primary Key structure for table sys_function
