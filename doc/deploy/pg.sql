@@ -5,7 +5,7 @@
  Source Server Type    : PostgreSQL
  Source Server Version : 120002
  Source Host           : 10.255.175.224:5432
- Source Catalog        : oa_data
+ Source Catalog        : flask_data
  Source Schema         : public
 
  Target Server Type    : PostgreSQL

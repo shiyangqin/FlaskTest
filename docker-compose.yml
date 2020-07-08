@@ -2,63 +2,63 @@ version: "3.8"
 
 services:
 
-  oa_pg_server:
+  pg_server:
     image: postgres:12.2
-    container_name: oa_pg_server
+    container_name: pg_server
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: oa_data
+      POSTGRES_DB: flask_data
     ports:
       - "5432:5432"
     volumes:
       - ./doc/deploy/pg.sql:/docker-entrypoint-initdb.d/pg.sql
-      - oa_pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     networks:
-      oa-net:
+      flask-net:
         aliases:
-          - oa_pg_server
+          - pg_server
 
-  oa_redis-server:
+  redis-server:
     image: redis:6.0
-    container_name: oa_redis_server
+    container_name: redis_server
     restart: always
     command: redis-server --requirepass redis
     ports:
       - "6379:6379"
     volumes:
-      - oa_redis_data:/data
+      - redis_data:/data
     networks:
-      oa-net:
+      flask-net:
         aliases:
-          - oa_redis_server
+          - redis_server
 
-  oa-server:
+  flask-server:
     build:
       context: .
-      dockerfile: ./doc/deploy/oa.Dockerfile
-    image: oa-server:oa
-    container_name: oa-server
+      dockerfile: ./doc/deploy/flask.Dockerfile
+    image: flask-server:1.0
+    container_name: flask-server
     restart: always
     command: ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
     depends_on:
-      - oa_pg_server
-      - oa_redis-server
+      - pg_server
+      - redis-server
     ports:
       - "80:80"
     networks:
-      oa-net:
+      flask-net:
         aliases:
-          - oa_redis_server
+          - flask-server
 
 networks:
-  oa-net:
-    name: oa-net
+  flask-net:
+    name: flask-net
 
 volumes:
-  oa_pg_data:
-    name: oa_pg_data
-  oa_redis_data:
-    name: oa_redis_data
+  pg_data:
+    name: pg_data
+  redis_data:
+    name: redis_data
  
