@@ -1,6 +1,6 @@
-# OA
+# FlaskTest
 
-python个人练手OA后端服务
+python个人练手后端服务
 
 ## 部署
 
@@ -8,7 +8,7 @@ python个人练手OA后端服务
 
 + [安装docker-compose](https://github.com/shiyangqin/Doc/blob/master/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/Docker/centos7%E5%AE%89%E8%A3%85docker-compose.md)
 
-+ 将OA整个项目上传至服务器，在OA目录下执行部署命令：
++ 将整个项目上传至服务器，在项目目录下执行部署命令：
 
 ```shell
 docker-compose up -d
