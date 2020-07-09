@@ -60,5 +60,5 @@ class PGProducer(object):
             self._cursor = None
         if self._conn:
             logger.debug(">>>>>>PostgreSQL close")
-            self._conn.close()
+            current_app.pool.pg_pool.putconn(self._conn)
             self._conn = None

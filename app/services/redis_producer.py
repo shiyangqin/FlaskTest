@@ -27,4 +27,4 @@ class RedisProducer(object):
         if self._redis.values():
             logger.debug(">>>>>>Redis close")
             for r in self._redis.values():
-                r.close()
+                current_app.pool.redis_pool.release(r)
