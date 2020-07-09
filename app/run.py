@@ -2,9 +2,9 @@
 from flask import Flask, current_app
 
 import logging_config
-from app import main_app
-from app.auth import auth_app
-from app.file import file_app
+from api import main_app
+from api.auth import auth_app
+from api.file import file_app
 from config import LOG
 from services.app_session import RedisSessionInterface
 from services.db_pool import DBPool

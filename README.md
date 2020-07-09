@@ -16,4 +16,4 @@ docker-compose up -d
 
 + 验证：打开浏览器输入服务器ip/test(例：10.255.175.224/test)，返回"{"status": "ok", "data": {"pg": true, "redis": true}}"则表示成功
 
-## [接口文档](doc/接口文档/home.md)
+## [接口文档](doc/home.md)

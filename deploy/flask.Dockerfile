@@ -13,14 +13,14 @@ RUN yum install -y gcc openssl-devel bzip2-devel expat-devel gdbm-devel readline
     && ln -s /usr/local/python3/bin/pip3 /usr/local/bin/pip3 \
     && rm -rf /opt/Python* \
     && yum install -y python-devel postgresql-devel \
-    && pip3 install -r /opt/FlaskTest/doc/deploy/r.txt \
+    && pip3 install -r /opt/FlaskTest/deploy/r.txt \
     && pip3 install gunicorn \
     && pip3 install gevent \
     && yum install -y epel-release \
     && yum install -y supervisor \
     && yum install -y nginx \
-    && mv /opt/FlaskTest/doc/deploy/nginx.conf /etc/nginx/nginx.conf \
-    && mv /opt/FlaskTest/doc/deploy/supervisor.ini /etc/supervisord.d/supervisor.ini
+    && mv /opt/FlaskTest/deploy/nginx.conf /etc/nginx/nginx.conf \
+    && mv /opt/FlaskTest/deploy/supervisor.ini /etc/supervisord.d/supervisor.ini
 
 CMD ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
 

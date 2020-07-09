@@ -7,7 +7,7 @@ from flask import make_response, send_from_directory
 from . import FileProducer
 
 try:
-    file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'file')
+    file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'file')
     os.makedirs(file_path)
 except:
     pass
@@ -36,12 +36,12 @@ class FileUpload(FileProducer):
         sql_dict['file_path'] = os.path.join(file_path, sql_dict['file_md5'])
         sql = """
             insert into file_info(
-                file_md5, 
-                file_name, 
+                file_md5,
+                file_name,
                 file_path
             ) values(
-                %(file_md5)s, 
-                %(file_name)s, 
+                %(file_md5)s,
+                %(file_name)s,
                 %(file_path)s
             ) on conflict(file_md5) do nothing
             returning xmax
@@ -53,3 +53,4 @@ class FileUpload(FileProducer):
         else:
             raise Exception("文件已存在")
         return sql_dict
+

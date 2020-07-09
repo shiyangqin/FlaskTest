@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./doc/deploy/pg.sql:/docker-entrypoint-initdb.d/pg.sql
+      - ./deploy/pg.sql:/docker-entrypoint-initdb.d/pg.sql
       - pg_data:/var/lib/postgresql/data
     networks:
       flask-net:
@@ -37,7 +37,7 @@ services:
   flask-server:
     build:
       context: .
-      dockerfile: ./doc/deploy/flask.Dockerfile
+      dockerfile: ./deploy/flask.Dockerfile
     image: flask-server:1.0
     container_name: flask-server
     restart: always

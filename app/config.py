@@ -24,7 +24,7 @@ def load_config(path):
 
 
 # 获取sap.ini所在路径（当前文件所在路径）
-filepath = os.path.join(os.path.dirname(__file__), 'sap.ini')
+filepath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sap.ini')
 conf = load_config(filepath)
 
 session_save_time = 60 * 60
@@ -51,3 +51,4 @@ class REDIS(object):
     port = conf.get('REDIS').get('port')
     pwd = conf.get('REDIS').get('pwd')
     session = 0  # 存session
+

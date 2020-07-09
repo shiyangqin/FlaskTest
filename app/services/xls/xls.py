@@ -12,7 +12,7 @@ from . import XlsProducer
 logger = logging.getLogger(__name__)
 
 try:
-    xls_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))), 'file/xls')
+    xls_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'xls')
     os.makedirs(xls_path)
 except:
     pass
