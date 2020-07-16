@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 import json
-from datetime import date
-from datetime import datetime
+from datetime import datetime, date
 
 
 class DateEncoder(json.JSONEncoder):
