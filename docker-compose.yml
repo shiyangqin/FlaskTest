@@ -25,7 +25,6 @@ services:
     container_name: redis_server
     restart: always
     environment:
-      ALLOW_EMPTY_PASSWORD: yes
       REDIS_PASSWORD: redis
     ports:
       - "6379:6379"
@@ -43,7 +42,7 @@ services:
     image: flask-server:1.0
     container_name: flask-server
     restart: always
-    command: ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
+    command: supervisord -n -c /etc/supervisord.conf
     depends_on:
       - pg_server
       - redis-server
@@ -63,4 +62,3 @@ volumes:
     name: pg_data
   redis_data:
     name: redis_data
- 
