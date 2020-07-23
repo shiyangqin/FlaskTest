@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
 
-  pg_server:
+  pg-server:
     image: postgres:12.2
-    container_name: pg_server
+    container_name: pg-server
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -14,26 +14,25 @@ services:
       - "5432:5432"
     volumes:
       - ./deploy/pg.sql:/docker-entrypoint-initdb.d/pg.sql
-      - pg_data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql/data
     networks:
       flask-net:
         aliases:
-          - pg_server
+          - pg-server
 
   redis-server:
     image: redis:6.0
-    container_name: redis_server
+    container_name: redis-server
     restart: always
-    environment:
-      REDIS_PASSWORD: redis
+    command: redis-server --requirepass redis
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      - redis-data:/data
     networks:
       flask-net:
         aliases:
-          - redis_server
+          - redis-server
 
   flask-server:
     build:
@@ -44,7 +43,7 @@ services:
     restart: always
     command: supervisord -n -c /etc/supervisord.conf
     depends_on:
-      - pg_server
+      - pg-server
       - redis-server
     ports:
       - "80:80"
@@ -58,7 +57,7 @@ networks:
     name: flask-net
 
 volumes:
-  pg_data:
-    name: pg_data
-  redis_data:
-    name: redis_data
+  pg-data:
+    name: pg-data
+  redis-data:
+    name: redis-data
